@@ -1,0 +1,103 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: r8r-db
+  labels:
+    app: r8r-db
+spec:
+  ports:
+    - port: 5432
+      targetPort: 5432
+      name: r8r-db
+  selector:
+    app: r8r-db
+  clusterIP: None
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: r8r-db
+  labels:
+    app: r8r-db
+spec:
+  template:
+    metadata:
+      labels:
+        app: r8r-db
+    spec:
+      containers:
+      - name: r8r-db
+        image: na7r1x/r8r-db
+        ports:
+        - containerPort: 5432
+          name: r8r-db
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: r8r-api
+  labels:
+    app: r8r-api
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+      name: r8r-api
+  selector:
+    app: r8r-api
+  clusterIP: None
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: r8r-api
+  labels:
+    app: r8r-api
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: r8r-api
+    spec:
+      containers:
+      - name: words
+        image: na7r1x/r8r-api
+        ports:
+        - containerPort: 8080
+          name: r8r-api
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: r8r-web
+  labels:
+    app: r8r-web
+spec:
+  ports:
+    - port: 8081
+      targetPort: 80
+      name: r8r-web
+      nodePort: 32001
+  selector:
+    app: r8r-web
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: r8r-web
+  labels:
+    app: r8r-web
+spec:
+  template:
+    metadata:
+      labels:
+        app: r8r-web
+    spec:
+      containers:
+      - name: r8r-web
+        image: na7r1x/r8r-web
+        ports:
+        - containerPort: 80
+          name: r8r-web
