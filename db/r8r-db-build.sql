@@ -1,3 +1,18 @@
-CREATE TABLE test (testmessage TEXT NOT NULL);
+CREATE TABLE user (
+	user_id serial PRIMARY KEY,
+	username VARCHAR ( 50 ) UNIQUE NOT NULL,
+	password VARCHAR ( 50 ) NOT NULL,
+	email VARCHAR ( 255 ) UNIQUE NOT NULL,
+	created_on TIMESTAMP NOT NULL,
+        last_login TIMESTAMP 
+);
 
-INSERT INTO test(testmessage) VALUES ('working');
+INSERT INTO user(
+    username,
+    password,
+    email
+) VALUES (
+    'admin',
+    'admin',
+    'admin@admin.com'
+);
