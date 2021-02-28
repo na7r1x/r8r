@@ -10,9 +10,11 @@ CREATE TABLE users (
 INSERT INTO users (
     username,
     password,
-    email
+    email,
+    created_on
 ) VALUES (
     'admin',
     'admin',
-    'admin@admin.com'
+    'admin@admin.com',
+    NOW()
 );
