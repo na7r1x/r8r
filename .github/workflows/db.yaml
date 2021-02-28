@@ -1,7 +1,7 @@
 name: r8r-db
 
 on:
-  workflow-dispatch:
+  workflow_dispatch:
   push:
     paths:
       - 'db/'
