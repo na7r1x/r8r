@@ -27,7 +27,7 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v2
         with:
-          context: db/
+          context: db
           push: true
           tags: na7r1x/r8r-db:latest
       -
