@@ -34,9 +34,9 @@ func Test_postgresRepo_GetAll(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := tt.pg.GetAll()
+			got, err := tt.pg.All()
 			if (err != nil) != tt.wantErr {
-				t.Errorf("postgresRepo.GetAll() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("postgresRepo.All() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			t.Log(got)
@@ -79,7 +79,7 @@ func Test_postgresRepo_Set(t *testing.T) {
 	testUser := domain.User{
 		Username: "test",
 		Password: "test",
-		Email:    "test@test",
+		Email:    "test2@test",
 	}
 
 	tests := []struct {
@@ -109,7 +109,7 @@ func Test_postgresRepo_Delete(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		{"Delete from users", pgrepo, args{"2"}, false},
+		{"Delete from users", pgrepo, args{"test"}, false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

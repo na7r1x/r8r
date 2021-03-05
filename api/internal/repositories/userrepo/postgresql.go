@@ -3,6 +3,7 @@ package userrepo
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 
 	_ "github.com/lib/pq"
 	"github.com/na7r1x/r8r/api/internal/core/domain"
@@ -41,7 +42,7 @@ func (pg postgresRepo) Destroy() error {
 	return nil
 }
 
-func (pg postgresRepo) GetAll() ([]domain.User, error) {
+func (pg postgresRepo) All() ([]domain.User, error) {
 	records := []domain.User{}
 
 	rows, err := database.Query("SELECT * FROM users")
@@ -64,7 +65,7 @@ func (pg postgresRepo) GetAll() ([]domain.User, error) {
 }
 
 func (pg postgresRepo) One(id string) (domain.User, error) {
-	row := database.QueryRow("SELECT * FROM users WHERE user_id = $1", id)
+	row := database.QueryRow("SELECT * FROM users WHERE username = $1", id)
 
 	var record domain.User
 
@@ -77,16 +78,30 @@ func (pg postgresRepo) One(id string) (domain.User, error) {
 }
 
 func (pg postgresRepo) Set(user domain.User) error {
-	statement, err := database.Prepare("INSERT INTO users (username,password,email,created_on) values($1,$2,$3,NOW()) ON CONFLICT (username) DO UPDATE SET password=$2, email=$3")
+	statement, err := database.Prepare("INSERT INTO users (username,password,email,created_on) values($1,$2,$3,NOW()) ON CONFLICT (username) DO UPDATE SET password=$2, email=$3 RETURNING user_id")
 	if err != nil {
 		return errors.New("failed database upsert; " + err.Error())
 	}
-	statement.Exec(user.Username, user.Password, user.Email)
+	var _username, _password, _email sql.NullString
+	_username = sql.NullString{String: user.Username, Valid: (user.Username != "")}
+	_password = sql.NullString{String: user.Password, Valid: (user.Password != "")}
+	_email = sql.NullString{String: user.Email, Valid: (user.Email != "")}
+	res, err := statement.Exec(_username, _password, _email)
+	if err != nil {
+		return err
+	}
+	var affected string
+	a, err := res.RowsAffected()
+	if err != nil {
+		affected = err.Error()
+	}
+	affected = string(fmt.Sprint(a))
+	fmt.Println("DEBUG: updated record [" + user.Username + "]; rows affected: " + affected)
 	return nil
 }
 
 func (pg postgresRepo) Delete(id string) error {
-	statement, err := database.Prepare("DELETE FROM users WHERE user_id = $1")
+	statement, err := database.Prepare("DELETE FROM users WHERE username = $1")
 	if err != nil {
 		return errors.New("failed to prepare delete statement; " + err.Error())
 	}
