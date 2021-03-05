@@ -1,6 +1,6 @@
 package ports
 
-//go:generate mockgen -destination=../../../mocks/mock_repositories.go -package=mocks github.com/na7r1x/r8r/api/internal/core/ports UserRepository
+//go:generate mockgen -destination=../../../mocks/mock_repositories.go -package=mocks github.com/na7r1x/r8r/api/internal/core/ports UserRepository,PostRepository
 
 import "github.com/na7r1x/r8r/api/internal/core/domain"
 
