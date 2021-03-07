@@ -42,14 +42,14 @@ CREATE TABLE post_ratings (
         NOT VALID
 );
 
-CREATE OR REPLACE VIEW public.avg_post_ratings
+CREATE OR REPLACE VIEW avg_post_ratings
  AS
-SELECT p.*, avg(pr.rating) as 'rating'
+SELECT p.*, avg(pr.rating) as "rating"
 FROM posts AS p
 	LEFT JOIN post_ratings AS pr ON  p.post_id = pr.post_id
 GROUP BY p.post_id;
 
-ALTER TABLE public.avg_post_ratings
+ALTER TABLE avg_post_ratings
     OWNER TO postgres;
 
 INSERT INTO users (
